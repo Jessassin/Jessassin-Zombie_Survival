@@ -1,0 +1,137 @@
+/ra = /reloadaliases
+
+*:/testmelt = >>>
+	assign(@p,player())
+	assign(@data,pinv(@p,0)[data])
+	assign(@item,pinv(@p,0)[type])
+	assign(@healtharray,
+		array(
+		298:55,299:80,300:75,301:65,
+		302:165,303:240,304:225,305:195,
+		306:165,307:240,308:225,309:195,
+		310:363,311:528,312:495,313:429,
+		314:77,315:112,316:105,317:91
+		)
+	)
+	if(not(array_index_exists(@healtharray,@item)),die('Item has no value!'))
+	assign(@itemcount,5)
+	assign(@maxhealth,@healtharray[@item])
+	assign(@currenthealth,subtract(@maxhealth,@data))
+	assign(@percent,divide(@currenthealth,@maxhealth))
+	assign(@return,floor(multiply(@itemcount,@percent)))
+	msg('max health')
+	msg(@maxhealth)
+	msg('current health')
+	msg(@currenthealth)
+	msg('percent')
+	msg(@percent)
+	msg('Ingot value')
+	msg(@return)
+<<<
+
+*:/addbank $ = >>>
+	_addbank($)
+<<<
+
+*:/addstore $ = >>>
+	_addstore($)
+<<<
+
+*:/admin [$item] [$] = >>>
+	if(equals_ic($item,'bank'),
+		_admin_bank($)
+	)
+	if(equals_ic($item,'store'),
+		_admin_store($)
+	)
+	msg('Syntax:')
+	msg('/admin <item> <args>')
+<<<
+
+*:/banks = _list_banks()
+
+*:/stores = _list_stores()
+
+*:/inbank = >>>
+	assign(@p,player())
+	msg(_in_bank(@p))
+<<<
+
+*:/instore = >>>
+	assign(@p,player())
+	msg(_in_store(@p))
+<<<
+
+*:/test = >>>
+#_update_moneycount()
+_run_on_interval()
+<<<
+
+*:/regionlist = >>>
+	assign(@p,player())
+	msg(@p)
+	assign(@loc,pinfo(@p)[1])
+	msg(@loc)
+	assign(@regions,sk_current_regions(@p))
+	msg(@regions)
+<<<
+
+*:/wallet = >>>
+	msg('Syntax:')
+	msg('/wallet <size,upgrade>')
+<<<
+
+*:/wallet size = >>>
+assign(@p,player())
+assign(@size,_wallet_size(@p))
+assign(@balance,acc_balance(@p))
+assign(@percent,round(multiply(divide(@balance,@size),100)))
+msg(concat('Current wallet capacity: $'@size))
+msg(concat('Your wallet is '@percent'% full'))
+<<<
+
+*:/wallet upgrade = >>>
+_upgrade_wallet(player())
+<<<
+
+*:/wallet reset = >>>
+	assign(@p,player())
+	_wallet_reset(@p)
+<<<
+
+*:/bank [$action] [$amount=0] = >>>
+	assign(@actions,array('deposit','withdraw','balance','premium'))
+	assign(@syntax,array('Syntax:','/bank <deposit, withdraw, balance> [Amount]','/bank <premium>'))
+	assign(@p,player())
+	assign(@action,$action)
+	assign(@amt,$amount)
+	if(not(array_contains_ic(@actions,@action)),
+		msg('not actions')
+		msg(@syntax[0])
+		msg(@syntax[1])
+		die(@syntax[2])
+	)
+	if(and(not(is_numeric(@amt)),not(equals_ic(@amt,'all'))),
+		msg('not amount')
+		msg(@syntax[0])
+		die(@syntax[1])
+	)
+	if(equals_ic(@action,'deposit'),
+		if(equals_ic(@amt,'all')
+			assign(@amt,acc_balance(@p))
+		)
+		_bank_deposit(@p,@amt)
+	)
+	if(equals_ic(@action,'withdraw'),
+		if(equals_ic(@amt,'all'),
+			assign(@amt,_bank_balance(@p))
+		)
+		_bank_withdraw(@p,@amt)
+	)
+	if(equals_ic(@action,'balance'),
+		_bank_balance(@p)
+	)
+	if(equals_ic(@action,'premium'),
+		_bank_getpremium(@p)
+	)
+<<<

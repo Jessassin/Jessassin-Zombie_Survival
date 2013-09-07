@@ -1,0 +1,64 @@
+*:/ei [$item] [$amt] [$arg3] [$arg4] = >>>
+	#Check Permissions!
+	if(not(pisop(player())),
+		if(not(has_permission(player(),essentials.item)),
+			die('Permission denied!')
+		)
+	)
+	#Initialize ivars
+	assign(@player,player())
+	assign(@name,null)
+	assign(@id,null)
+	assign(@amt,null)
+	assign(@lore,null)
+	
+	#Process arg #3
+	assign(@arg3a,reg_split(':',$arg3))
+	if(array_contains_ic(@arg3a,'lore'),
+		assign(@lore,@arg3a[1]),
+		msg('NOT LORE')
+	)
+	msg(@lore)
+	if(equals(length(@arg3a),1),
+		msg('Attempted enchant')
+	)
+	
+	#Process arg #4
+	assign(@arg4a,reg_split(':',$arg4))
+	if(array_contains_ic(@arg4a,'name'),
+		assign(@name,@arg4a[1])
+	)
+	if(equals(length(@arg4a),1),
+		msg('Attempted something strange')
+	)
+	
+	#Process arg #1
+	if(is_numeric($item),
+		assign(@name,data_name($item))
+		if(is_null(@name),
+			die('That item is not known!')
+		)
+		assign(@id,data_values(@id))
+	)
+	if(is_string($item),
+		assign(@id,data_values($item))
+		if(is_null(@id),
+			die('That item is not known!')
+		)
+		assign(@name,data_name(@id))
+	)
+	
+	#Process arg #2
+	if(equals(length($amt),0),
+		assign(@amt,1),
+		assign(@amt,$amt)
+	)
+	if(not(is_numeric(@amt)),
+		die('Syntax error! (amt)')
+	assign(@meta,array($meta))
+	msg(@meta)
+	)
+	msg(pinv('Jessassin'))
+	pgive_item(@id,@amt)
+	msg(concat('Giving ',@player,' ',@amt,' ',@name))
+<<<
