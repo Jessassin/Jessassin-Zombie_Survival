@@ -13,5 +13,5 @@ bind('entity_damage', null, array(type: 'ZOMBIE'), @event,
 	assign(@fraction,divide(@random,10))
 	assign(@money,multiply(@fraction,@damage))
 	assign(@rounded,round(@money))
-	acc_add(@player,@rounded)
+	_acc_add(@player,@rounded)
 )
